@@ -276,7 +276,7 @@ Drupal.HierarchicalSelect.attachBindings = function(hsid) {
   })
 
   // "update-hierarchical-select" event
-  .find('.hierarchical-select .selects select').unbind().change(function(_hsid) {
+  .find('.hierarchical-select .selects select:not(.hs-processed)').addClass('hs-processed').change(function(_hsid) {
     return function() {
       if (Drupal.settings.HierarchicalSelect.settings["hs-" + _hsid]['updatesEnabled']) {
         Drupal.HierarchicalSelect.update(_hsid, 'update-hierarchical-select', {opString: updateOpString, select_id : $(this).attr('id')});
