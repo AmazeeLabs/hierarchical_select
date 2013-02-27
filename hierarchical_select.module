@@ -25,7 +25,7 @@ function hierarchical_select_menu() {
     'theme callback'    => 'ajax_base_page_theme',
     'type'              => MENU_CALLBACK,
   );
-  
+
   $items['admin/config/content/hierarchical_select'] = array(
     'title'            => 'Hierarchical Select',
     'description'      => 'Configure site-wide settings for the Hierarchical Select form element.',
@@ -274,7 +274,7 @@ function hierarchical_select_config_id_load($config_id) {
 // Forms API callbacks.
 
 /**
- * Strongly 
+ * Strongly
  *
  * @see file_ajax_upload(), upon which this is strongly inspired.
  * @see ajax_form_callback()
@@ -308,7 +308,7 @@ function hierarchical_select_ajax($form, $form_state) {
   foreach ($form_parents as $parent) {
     $form = $form[$parent];
   }
-  
+
   // If the user's browser supports the active cache system, then send the
   // currently requested hierarchy in an easy-to-manage form.
   $cache = array();
@@ -329,8 +329,8 @@ function hierarchical_select_ajax($form, $form_state) {
   // Send AJAX command to update the Hierarchical Select.
   $commands = array();
   $commands[] = array(
-      'command' => 'hierarchicalSelectUpdate', 
-      'output'  => $output, 
+      'command' => 'hierarchicalSelectUpdate',
+      'output'  => $output,
       // 'cache'   => $cache,
   );
   $new_settings = _hs_new_setting_ajax(FALSE);
@@ -378,8 +378,8 @@ function _hs_process_attach_css_js($element, $hsid, &$form_state, $complete_form
   // hierarchical select.
   $element['#attached']['library'][] = array('system', 'drupal.ajax');
   $element['#attached']['library'][] = array('system', 'jquery.form');
-  $element['#attached']['library'][] = array('system', 'effects.core');    
-  $element['#attached']['library'][] = array('system', 'effects.drop');    
+  $element['#attached']['library'][] = array('system', 'effects.core');
+  $element['#attached']['library'][] = array('system', 'effects.drop');
   $element['#attached']['css'][] = drupal_get_path('module', 'hierarchical_select') . '/hierarchical_select.css';
   $element['#attached']['js'][] = drupal_get_path('module', 'hierarchical_select') . '/hierarchical_select.js';
   if (variable_get('hierarchical_select_js_cache_system', 0) == 1) {
@@ -489,7 +489,7 @@ function _hs_process_developer_mode_log_selections($config, $hs_selection, $db_s
   }
 }
 
-function _hs_process_developer_mode_log_hierarchy_and_dropbox($config, $hierarchy, $dropbox) {  
+function _hs_process_developer_mode_log_hierarchy_and_dropbox($config, $hierarchy, $dropbox) {
   if (HS_DEVELOPER_MODE) {
     _hierarchical_select_log('Generated hierarchy in ' . $hierarchy->build_time['total'] . ' ms:');
     _hierarchical_select_log($hierarchy);
@@ -627,7 +627,7 @@ function _hs_process_render_dropbox($element, $hsid, $creating_new_item, $dropbo
         '#attributes'              => array('class' => array('add-to-dropbox')),
         '#limit_validation_errors' => array($element['#parents']),
         '#validate'                => array(),
-        '#submit'                  => array('hierarchical_select_ajax_update_submit'),        
+        '#submit'                  => array('hierarchical_select_ajax_update_submit'),
       );
     }
 
@@ -641,7 +641,7 @@ function _hs_process_render_dropbox($element, $hsid, $creating_new_item, $dropbo
 
         // Disable all child form elements of $element['hierarchical_select].
         // _hierarchical_select_mark_as_disabled($element['hierarchical_select']);
-        
+
         // TODO: make the above work again. Currently, we're just disabling
         // the "Add" button. #disabled can't be used for the same reasons as
         // described in _hierarchical_select_mark_as_disabled().
@@ -654,7 +654,7 @@ function _hs_process_render_dropbox($element, $hsid, $creating_new_item, $dropbo
     if (isset($dropbox->lineages_selections)) {
       $form_state['storage']['hs'][$hsid]['dropbox_lineages_selections'] = $dropbox->lineages_selections;
     }
-    
+
     // Add the dropbox-as-a-table that will be visible to the user.
     $element['dropbox']['visible'] = _hs_process_render_db_table($hsid, $dropbox);
   }
@@ -689,7 +689,7 @@ function _hs_process_render_nojs($element, $config) {
 /**
  * Hierarchical select form element type #process callback.
  */
-function form_hierarchical_select_process($element, &$form_state, $complete_form) {  
+function form_hierarchical_select_process($element, &$form_state, $complete_form) {
   // dpm('#process');
   // dpm($form_state);
   //
@@ -1024,7 +1024,7 @@ function _hierarchical_select_process_calculate_selections(&$element, $hsid, $fo
   // - no input data was provided (through POST nor GET)
   // - or #value is set directly and not by a Hierarchical Select POST (and
   //   therefor set either manually or by another module),
-  // then use the value of #default_value, or when available, of #value.  
+  // then use the value of #default_value, or when available, of #value.
   if (empty($form_state['input']) || (!isset($element['#value']['hierarchical_select']) && !isset($element['#value']['dropbox']))) {
     $value = (isset($element['#value'])) ? $element['#value'] : $element['#default_value'];
     $value = (is_array($value)) ? $value : array($value);
@@ -1408,7 +1408,7 @@ function _hierarchical_select_mark_as_disabled(&$element) {
   //    for UI purposes only, but still allow input to be processed if it's
   //    sumitted, it can set the desired attribute in #attributes directly
   //    rather than using #disabled."
-  // #disabled prevents #value from containing values for disabled elements, 
+  // #disabled prevents #value from containing values for disabled elements,
   // but using #attributes circumvents this. Most likely, Form API thinks that
   // because HS' selects are disabled, that the whole of HS is disabled (which
   // is of course a wrong assumption). Hence it thinks the 'op' that is being
@@ -1825,7 +1825,9 @@ function _hierarchical_select_hierarchy_generate($config, $selection, $required,
 
   // Add child information.
   $start_childinfo = microtime();
-  $hierarchy = _hierarchical_select_hierarchy_add_childinfo($hierarchy, $config);
+  // We don't need this right now, if there are lots of items, the execution
+  // of this function takes too long;
+  //$hierarchy = _hierarchical_select_hierarchy_add_childinfo($hierarchy, $config);
   $end_childinfo = microtime();
 
   // Calculate the time it took to build the hierarchy object.
