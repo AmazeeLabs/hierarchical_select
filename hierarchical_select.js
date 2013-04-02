@@ -73,7 +73,7 @@ Drupal.HierarchicalSelect.log = function(hsid, messages) {
 
   // Store the log messages. The first call to this function may not contain a
   // message: the initial log included in the initial HTML rendering should be
-  // used instead.. 
+  // used instead..
   if (Drupal.HierarchicalSelect.state["hs-" + hsid].log.length == 0) {
     Drupal.HierarchicalSelect.state["hs-" + hsid].log.push(Drupal.settings.HierarchicalSelect.initialLog["hs-" + hsid]);
   }
@@ -102,7 +102,7 @@ Drupal.HierarchicalSelect.transform = function(hsid) {
   // we want to continue to use the "Remove" checkboxes.
   .find('*').css('display', 'none').end() // We can't use .hide() because of collapse.js: http://drupal.org/node/351458#comment-1258303.
   // Put a "Remove" link there instead.
-  .append('<a href="">'+ removeString +'</a>');  
+  .append('<a href="">'+ removeString +'</a>');
 };
 
 Drupal.HierarchicalSelect.resizable = function(hsid) {
@@ -182,7 +182,7 @@ Drupal.HierarchicalSelect.disableForm = function(hsid) {
   $('#hierarchical-select-' + hsid +'-wrapper').addClass('waiting');
 
   // Indicate that the user has to wait.
-  $('body').css('cursor', 'wait');
+  // $('body').css('cursor', 'wait');
 };
 
 Drupal.HierarchicalSelect.enableForm = function(hsid) {
@@ -264,7 +264,7 @@ Drupal.HierarchicalSelect.attachBindings = function(hsid) {
   .unbind('disable-updates').bind('disable-updates', data, function(e) {
     Drupal.settings.HierarchicalSelect.settings["hs-" + e.data.hsid]['updatesEnabled'] = false;
   })
-  
+
   // "enforce-update" event
   .unbind('enforce-update').bind('enforce-update', data, function(e, extraPost) {
      Drupal.HierarchicalSelect.update(e.data.hsid, 'enforced-update', {opString: updateOpString, extraPost: extraPost});
@@ -320,7 +320,7 @@ Drupal.HierarchicalSelect.attachBindings = function(hsid) {
       }
 
       // Check the (hidden, because JS is enabled) checkbox that marks this
-      // dropbox entry for removal. 
+      // dropbox entry for removal.
       $(this).parent().find('input[type=checkbox]').attr('checked', true);
       Drupal.HierarchicalSelect.update(_hsid, 'remove-from-dropbox', {opString: updateOpString});
       return false; // Prevent the browser from POSTing the page.
@@ -353,14 +353,14 @@ Drupal.HierarchicalSelect.preUpdateAnimations = function(hsid, updateType, lastU
     default:
       if (callback) {
         callback();
-      }  
+      }
       break;
   }
 };
 
 Drupal.HierarchicalSelect.postUpdateAnimations = function(hsid, updateType, lastUnchanged, callback) {
   if (Drupal.settings.HierarchicalSelect.settings["hs-" + hsid].resizable) {
-    // Restore the resize.  
+    // Restore the resize.
     Drupal.HierarchicalSelect.resize(
       $('#hierarchical-select-' + hsid + '-wrapper .hierarchical-select .selects select', Drupal.HierarchicalSelect.context),
       Drupal.HierarchicalSelect.state["hs-" + hsid].defaultHeight,
@@ -373,7 +373,7 @@ Drupal.HierarchicalSelect.postUpdateAnimations = function(hsid, updateType, last
   switch (updateType) {
     case 'update-hierarchical-select':
       var $createNewItemInput = $('#hierarchical-select-'+ hsid +'-wrapper .hierarchical-select .create-new-item-input', Drupal.HierarchicalSelect.context);
-      
+
       if ($createNewItemInput.size() == 0) {
         // Give focus to the level below the one that has changed, if it
         // exists.
@@ -452,7 +452,7 @@ Drupal.HierarchicalSelect.update = function(hsid, updateType, settings) {
 
   // Pass the hierarchical_select id via POST.
   post.push({name : 'hsid', value : hsid});
-  
+
   // If a cache system is installed, let the server know if it's running
   // properly. If it is running properly, the server will send back additional
   // information to maintain a lazily-loaded cache.
@@ -509,7 +509,7 @@ Drupal.HierarchicalSelect.update = function(hsid, updateType, settings) {
       }
       post.push({name : 'op', value : settings.opString});
       break;
-    
+
     case 'enforced-update':
       post.push({name : 'op', value : settings.opString});
       post = post.concat(settings.extraPost);
@@ -539,7 +539,7 @@ Drupal.HierarchicalSelect.update = function(hsid, updateType, settings) {
     data:       post,
     beforeSend: function() {
       Drupal.HierarchicalSelect.triggerEvents(hsid, 'before-' + updateType, settings);
-      Drupal.HierarchicalSelect.disableForm(hsid); 
+      Drupal.HierarchicalSelect.disableForm(hsid);
     },
     error: function (XMLHttpRequest, textStatus, errorThrown) {
       // When invalid HTML is received in Safari, jQuery calls this function.
@@ -564,7 +564,7 @@ Drupal.HierarchicalSelect.update = function(hsid, updateType, settings) {
           Drupal.ajax.prototype.commands[response[i]['command']](this, response[i], status, hsid);
         }
       }
-      
+
       // Attach behaviors. This is just after the HTML has been updated, so
       // it's as soon as we can.
       Drupal.attachBehaviors(Drupal.HierarchicalSelect.context);
