@@ -182,6 +182,7 @@ Drupal.HierarchicalSelect.disableForm = function(hsid) {
   $('#hierarchical-select-' + hsid +'-wrapper').addClass('waiting');
 
   // Indicate that the user has to wait.
+  // KathrynC: Remove this functionality.
   // $('body').css('cursor', 'wait');
 };
 
