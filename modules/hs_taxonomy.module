@@ -997,44 +997,56 @@ function theme_hs_taxonomy_formatter_lineage($variables) {
 function _hs_taxonomy_hierarchical_select_get_tree($vid, $parent = 0, $depth = -1, $max_depth = NULL, $reset = FALSE) {
   static $children, $parents, $terms;
 
-  if ($reset) {
-    $children = $parents = $terms = array();
-  }
-
-  $depth++;
-
-  // We cache trees, so it's not CPU-intensive to call get_tree() on a term
-  // and its children, too.
-  if (!isset($children[$vid])) {
-    $children[$vid] = array();
-
-    // TODO Please convert this statement to the D7 database API syntax.
-    $result = db_query('SELECT t.tid, t.*, parent FROM {taxonomy_term_data} t INNER JOIN  {taxonomy_term_hierarchy} h ON t.tid = h.tid WHERE t.vid = :vid ORDER BY weight, name', array(':vid' => $vid));
-    foreach ($result as $term) {
-      $children[$vid][$term->parent][] = $term->tid;
-      $parents[$vid][$term->tid][] = $term->parent;
-      $terms[$vid][$term->tid] = $term;
+  // Check for a cached tree if the parent is 0.
+  if ($parent == 0 && !$reset) {
+    $cache = cache_get('hs_taxonomy_tree:' . $vid);
+    if ($cache && isset($cache->data)) {
+      $tree = $cache->data;
     }
   }
+  else {
+    if ($reset) {
+      $children = $parents = $terms = array();
+    }
 
-  $max_depth = (is_null($max_depth)) ? count($children[$vid]) : $max_depth;
-  if (isset($children[$vid][$parent])) {
-    foreach ($children[$vid][$parent] as $child) {
-      if ($max_depth > $depth) {
-        $term = clone $terms[$vid][$child];
-        $term->depth = $depth;
-        // The "parent" attribute is not useful, as it would show one parent only.
-        unset($term->parent);
-        $term->parents = $parents[$vid][$child];
-        $tree[] = $term;
+    $depth++;
 
-        if (isset($children[$vid][$child])) {
-          $tree = array_merge($tree, _hs_taxonomy_hierarchical_select_get_tree($vid, $child, $depth, $max_depth));
+    // We cache trees, so it's not CPU-intensive to call get_tree() on a term
+    // and its children, too.
+    if (!isset($children[$vid])) {
+      $children[$vid] = array();
+
+      // TODO Please convert this statement to the D7 database API syntax.
+      $result = db_query('SELECT t.tid, t.*, parent FROM {taxonomy_term_data} t INNER JOIN  {taxonomy_term_hierarchy} h ON t.tid = h.tid WHERE t.vid = :vid ORDER BY weight, name', array(':vid' => $vid));
+      foreach ($result as $term) {
+        $children[$vid][$term->parent][] = $term->tid;
+        $parents[$vid][$term->tid][] = $term->parent;
+        $terms[$vid][$term->tid] = $term;
+      }
+    }
+
+    $max_depth = (is_null($max_depth)) ? count($children[$vid]) : $max_depth;
+    if (isset($children[$vid][$parent])) {
+      foreach ($children[$vid][$parent] as $child) {
+        if ($max_depth > $depth) {
+          $term = clone $terms[$vid][$child];
+          $term->depth = $depth;
+          // The "parent" attribute is not useful, as it would show one parent only.
+          unset($term->parent);
+          $term->parents = $parents[$vid][$child];
+          $tree[] = $term;
+
+          if (isset($children[$vid][$child])) {
+            $tree = array_merge($tree, _hs_taxonomy_hierarchical_select_get_tree($vid, $child, $depth, $max_depth));
+          }
         }
       }
     }
+    // If the parent is 0, we cache the tree.
+    if ($parent == 0) {
+      cache_set('hs_taxonomy_tree:' . $vid, $tree);
+    }
   }
-
   return isset($tree) ? $tree : array();
 }
 
