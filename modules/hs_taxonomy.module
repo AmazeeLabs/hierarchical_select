@@ -998,13 +998,14 @@ function _hs_taxonomy_hierarchical_select_get_tree($vid, $parent = 0, $depth = -
   static $children, $parents, $terms;
 
   // Check for a cached tree if the parent is 0.
+  $tree = array();
   if ($parent == 0 && !$reset) {
     $cache = cache_get('hs_taxonomy_tree:' . $vid);
     if ($cache && isset($cache->data)) {
       $tree = $cache->data;
     }
   }
-  else {
+  if (empty($tree)) {
     if ($reset) {
       $children = $parents = $terms = array();
     }
