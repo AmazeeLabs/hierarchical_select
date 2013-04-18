@@ -690,6 +690,13 @@ function _hs_process_render_nojs($element, $config) {
  * Hierarchical select form element type #process callback.
  */
 function form_hierarchical_select_process($element, &$form_state, $complete_form) {
+  // Performance improvement. If we do not have access to the element, then
+  // do not even process it.
+  // @todo: This has to be checked if it has some side effects for any content
+  // types, maybe for articles, etc..
+  if ($element['#access'] === FALSE) {
+    return $element;
+  }
   // dpm('#process');
   // dpm($form_state);
   //
