@@ -191,6 +191,27 @@ function hs_taxonomy_form_taxonomy_form_term_alter(&$form, &$form_state) {
   $form['relations']['parent']['#config']['dropbox']['title'] = t('All parent terms');
 }
 
+/**
+ * Implements hook_taxonomy_term_insert().
+ */
+function hs_taxonomy_taxonomy_term_insert($term) {
+  cache_clear_all('hs_taxonomy_tree:' . $term->vid, 'cache');
+}
+
+/**
+ * Implementation of hook_taxonomy_term_update().
+ */
+function hs_taxonomy_taxonomy_term_update($term) {
+  cache_clear_all('hs_taxonomy_tree:' . $term->vid, 'cache');
+}
+
+/**
+ * Implementation of hook_taxonomy_term_delet().
+ */
+function hs_taxonomy_taxonomy_term_delete($term) {
+  cache_clear_all('hs_taxonomy_tree:' . $term->vid, 'cache');
+}
+
 
 //----------------------------------------------------------------------------
 // FAPI callbacks.
