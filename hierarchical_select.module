@@ -694,7 +694,9 @@ function form_hierarchical_select_process($element, &$form_state, $complete_form
   // do not even process it.
   // @todo: This has to be checked if it has some side effects for any content
   // types, maybe for articles, etc..
-  if ($element['#access'] === FALSE) {
+  // Until now, no side effect, probably this todo has to be removed. For the
+  // moment we let it a bit more.
+  if (isset($element['#access']) && $element['#access'] === FALSE) {
     return $element;
   }
   // dpm('#process');
