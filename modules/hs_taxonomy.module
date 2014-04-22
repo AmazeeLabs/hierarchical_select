@@ -311,7 +311,7 @@ function hs_taxonomy_field_widget_error($element, $error, $form, &$form_state) {
  * #return_value to the format that Field API/Taxonomy Field expects.
  */
 function hs_taxonomy_widget_process($element, &$form_state, $complete_form) {
-  $tids = $element['#return_value'];
+  $tids = !empty($element['#return_value']) ? $element['#return_value'] : array();
 
   // If #return_value is array(NULL), then nothing was selected!
   if (count($tids) == 1 && $tids[0] === NULL) {
@@ -320,8 +320,10 @@ function hs_taxonomy_widget_process($element, &$form_state, $complete_form) {
   }
 
   $items = array();
-  foreach ($tids as $tid) {
-    $items[] = array('tid' => $tid);
+  if (!empty($tids)) {
+    foreach ($tids as $tid) {
+      $items[] = array('tid' => $tid);
+    }
   }
 
   $element['#return_value'] = $items;
